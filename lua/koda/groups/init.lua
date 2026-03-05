@@ -59,8 +59,7 @@ function M.setup(colors, opts, theme)
           groups[group] = true
         end
       end
-      -- Special case: detect standalone mini.* modules (mini.pick, mini.icons, etc.)
-      if not groups.mini then
+      if not groups.mini then -- check standalone mini modules
         for plugin_name, _ in pairs(lazy_plugins) do
           if plugin_name:match("^mini%.") then
             groups.mini = true
@@ -73,11 +72,11 @@ function M.setup(colors, opts, theme)
       local ok, packdata = pcall(vim.pack.get, nil, { info = false })
       if ok and packdata then
         for _, plugin in ipairs(packdata) do
-          if plugin.active and M.plugins[plugin.spec.name] then
-            groups[M.plugins[plugin.spec.name]] = true
+          local group = M.plugins[plugin.spec.name]
+          if group then
+            groups[group] = true
           end
-          -- Check standalone mini modules
-          if not groups.mini and plugin.active and plugin.spec.name:match("^mini%.") then
+          if not groups.mini and plugin.spec.name:match("^mini%.") then
             groups.mini = true
           end
         end
@@ -88,7 +87,6 @@ function M.setup(colors, opts, theme)
         if M.plugins[plugin.name] then
           groups[M.plugins[plugin.name]] = true
         end
-        -- Check standalone mini modules
         if not groups.mini and plugin.name:match("^mini%.") then
           groups.mini = true
         end
