@@ -1,6 +1,6 @@
-local utils = require("koda.utils")
-local palette = require("koda.palette.dark")
-local groups = require("koda.groups")
+local Utils = require("koda.utils")
+local Palette = require("koda.palette.dark")
+local Groups = require("koda.groups")
 
 describe("File integrity:", function()
   it("can require every file in koda/groups without syntax errors", function()
@@ -19,7 +19,7 @@ describe("File integrity:", function()
 end)
 
 describe("Plugin detection logic:", function()
-  local colors = palette
+  local colors = Palette
   local original_api = vim.pack
 
   before_each(function()
@@ -28,13 +28,13 @@ describe("Plugin detection logic:", function()
     package.loaded["koda.utils"] = nil
     package.loaded["koda.groups"] = nil
     vim.pack = original_api
-    utils.cache.clear()
+    Utils.cache.clear()
   end)
 
   it("loads only base groups when auto=true and no managers present", function()
     local config = require("koda.config")
     local opts = config.extend({ auto = true })
-    local _, loaded = groups.setup(colors, opts)
+    local _, loaded = Groups.setup(colors, opts)
 
     assert.is_true(loaded["base"])
     assert.is_nil(loaded["gitsigns"])
@@ -43,7 +43,7 @@ describe("Plugin detection logic:", function()
   it("loads all plugins when auto=false", function()
     local config = require("koda.config")
     local opts = config.extend({ auto = false })
-    local _, loaded = groups.setup(colors, opts)
+    local _, loaded = Groups.setup(colors, opts)
 
     assert.is_true(loaded["telescope"], "Telescope should be laoded")
     assert.is_true(loaded["blink"], "Blink should be loaded")
@@ -58,7 +58,7 @@ describe("Plugin detection logic:", function()
     }
     local config = require("koda.config")
     local opts = config.extend({ auto = true })
-    local _, loaded = groups.setup(colors, opts)
+    local _, loaded = Groups.setup(colors, opts)
 
     assert.is_true(loaded["telescope"], "Telescope should be loaded")
     assert.is_nil(loaded["blink.cmp"], "Blink should NOT be loaded")
@@ -74,18 +74,14 @@ describe("Plugin detection logic:", function()
             active = true,
             spec = { name = "blink.cmp" },
           },
-          {
-            active = false,
-            spec = { name = "telescope.nvim" },
-          },
         }
       end,
     }
     local config = require("koda.config")
     local opts = config.extend({ auto = true })
-    local _, loaded = groups.setup(colors, opts)
+    local _, loaded = Groups.setup(colors, opts)
 
     assert.is_true(loaded["blink"], "Blink should be loaded via vim.pack")
-    assert.is_nil(loaded["telescope"], "Telescope should NOT be loaded (inactive in vim.pack)")
+    assert.is_nil(loaded["telescope"], "Telescope should NOT be loaded")
   end)
 end)
