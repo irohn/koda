@@ -49,8 +49,9 @@ end
 
 --- Deletes Koda's cache files from the system
 function M.cache.clear()
-  for _, style in ipairs({ "dark", "light" }) do
-    vim.uv.fs_unlink(M.cache.file(style))
+  local files = vim.fn.glob(vim.fn.stdpath("cache") .. "/koda-*.json", false, true)
+  for _, file in ipairs(files) do
+    vim.uv.fs_unlink(file)
   end
 end
 

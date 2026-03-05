@@ -34,7 +34,7 @@ end
 ---@param opts koda.Config
 ---@return koda.Highlights
 ---@return table
-function M.setup(colors, opts)
+function M.setup(colors, opts, theme)
   -- Always laod base groups
   local groups = {
     base = true,
@@ -110,8 +110,8 @@ function M.setup(colors, opts)
   }
 
   -- Check if we can use cached highlights
-  local cache_key = vim.o.background
-  local cache = opts.cache and utils.cache.read(cache_key)
+  local cache_key = theme or vim.o.background
+  local cache = opts.cache and Utils.cache.read(cache_key)
   local hl = cache and vim.deep_equal(config, cache.config) and cache.groups
 
   -- Generate highlights if cache miss
