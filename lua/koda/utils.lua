@@ -100,16 +100,16 @@ function M.blend(foreground, background, alpha)
   return string.format("#%02X%02X%02X", blend_channel(1), blend_channel(2), blend_channel(3))
 end
 
--- Reloads the colorscheme, useful while in development
+-- Clears cache and reloads the current colorscheme
 function M.reload()
   M.cache.clear()
   for name, _ in pairs(package.loaded) do
-    if name:match("^koda") then
+    if name:match("^koda") and name ~= "koda.config" then
       package.loaded[name] = nil
     end
   end
   vim.notify("Koda reloaded", vim.log.levels.WARN)
-  vim.cmd("colorscheme koda")
+  vim.cmd.colorscheme(vim.g.colors_name)
 end
 
 return M
